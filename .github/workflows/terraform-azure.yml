@@ -51,7 +51,7 @@ jobs:
     name: 'terraform apply'
     needs: [terraform_plan]
     runs-on: ubuntu-latest
-    environment: production
+    environment: dev
     
     defaults:
       run:
