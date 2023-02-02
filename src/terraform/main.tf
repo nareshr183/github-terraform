@@ -5,7 +5,7 @@ terraform {
 }
 
 provider "azurerm" {
-feature {}
+features {}
 }
 
 
