@@ -1,3 +1,4 @@
+# terraform file
 terraform {
   required_providers {
     azurerm = {
