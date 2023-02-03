@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # terraform {
 #   required_providers {
 #     azurerm = {
@@ -14,25 +15,27 @@
 #   }
 # }
 
+=======
+>>>>>>> dbe37b3fe571a150894285cf80cc4ea7b3b976af
 terraform {
   backend "azurerm" {
 
   }
 }
 
+<<<<<<< HEAD
 
 
 # Configure the Microsoft Azure Provider
+=======
+>>>>>>> dbe37b3fe571a150894285cf80cc4ea7b3b976af
 provider "azurerm" {
-  features {}
-  # subscription_id = var.subscription_id
-  # client_id       = var.client_id
-  # client_secret   = var.client_secret
-  # tenant_id       = var.tenant_id
+features {}
 }
 
 
-# Create a resource group
+
+# Create a resource group rg-hub
 resource "azurerm_resource_group" "rg" {
   name     = "rg-hub"
   location = "East US"
