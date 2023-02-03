@@ -1,6 +1,6 @@
 parameters:
   - name: source_location
-  - name: variables_file_path
+ # - name: variables_file_path
   - name: environment_name
   - name: service_principle_name
   - name: backend_storage_resourceGroupName

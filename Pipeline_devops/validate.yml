@@ -1,6 +1,6 @@
 parameters:
   - name: source_location
-  - name: variables_file_path
+  #- name: variables_file_path
   - name: environment_name
   - name: service_principle_name
   - name: backend_storage_resourceGroupName
@@ -34,7 +34,8 @@ jobs:
           provider: 'azurerm'
           command: 'plan'
           workingDirectory: '$(System.DefaultWorkingDirectory)${{ parameters.source_location }}'
-          commandOptions: '-var-file="${{ parameters.variables_file_path }}" --out="plan.tfplan"'
+         # commandOptions: '-var-file="${{ parameters.variables_file_path }}" --out="plan.tfplan"'
+          commandOptions: '--out="plan.tfplan"'
           environmentServiceNameAzureRM: ${{ parameters.service_principle_name }}
       
       - task: CopyFiles@2

@@ -9,31 +9,32 @@ trigger:
 parameters:
   - name: source_location
     values:
-      - '/IaC/TFCode'
-  - name: variables_file_path
-    values:
-      - './Vars/dev.tfvars'
+      - '/src/terraform'
+  #- name: variables_file_path
+   # values:
+    #  - './Vars/dev.tfvars'
   - name: environment_name
     values:
       - 'dev'
   - name: service_principle_name
     values:
-      - 'terraform-deployment-spn'
+      - 'devopstoazure'
   - name: backend_storage_resourceGroupName
     values:
-      - 'rg-terraform-state'
+      - 'rg-tf'
   - name: backend_storage_account_name
     values:
-      - 'stterraformstate99'
+      - 'tfstfjan2023acc'
   - name: backend_storage_container_name
     values:
-      - 'tf-state'
+      - 'tfstatefile'
   - name: backend_storage_state_file_name
     values:
-      - 'dev-env.tfstate'
+      - 'devops.prd.tfstate'
 
 pool:
-  vmImage: ubuntu-latest
+  name: nareshpcagent
+  #vmImage: ubuntu-latest
 
 stages:
   - stage: validate
@@ -41,7 +42,7 @@ stages:
       - template: validate.yaml
         parameters:
           source_location :  ${{ parameters.source_location }}
-          variables_file_path :  ${{ parameters.variables_file_path }}
+          #variables_file_path :  ${{ parameters.variables_file_path }}
           environment_name :  ${{ parameters.environment_name }}
           service_principle_name :  ${{ parameters.service_principle_name }}
           backend_storage_resourceGroupName :  ${{ parameters.backend_storage_resourceGroupName }}
@@ -63,7 +64,7 @@ stages:
               - template: deploy.yml
                 parameters:
                   source_location :  ${{ parameters.source_location }}
-                  variables_file_path :  ${{ parameters.variables_file_path }}
+                  #variables_file_path :  ${{ parameters.variables_file_path }}
                   environment_name :  ${{ parameters.environment_name }}
                   service_principle_name :  ${{ parameters.service_principle_name }}
                   backend_storage_resourceGroupName :  ${{ parameters.backend_storage_resourceGroupName }}
