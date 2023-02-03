@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # terraform {
 #   required_providers {
 #     azurerm = {
@@ -15,20 +15,15 @@
 #   }
 # }
 
-=======
->>>>>>> dbe37b3fe571a150894285cf80cc4ea7b3b976af
 terraform {
   backend "azurerm" {
 
   }
 }
 
-<<<<<<< HEAD
 
 
 # Configure the Microsoft Azure Provider
-=======
->>>>>>> dbe37b3fe571a150894285cf80cc4ea7b3b976af
 provider "azurerm" {
 features {}
 }
