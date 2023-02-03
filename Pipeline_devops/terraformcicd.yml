@@ -8,7 +8,7 @@ trigger:
 
 parameters:
   - name: source_location
-    values:
+    values: 
       - '/src/terraform'
   #- name: variables_file_path
    # values:
@@ -39,7 +39,7 @@ pool:
 stages:
   - stage: validate
     jobs:
-      - template: validate.yaml
+      - template: validate.yml
         parameters:
           source_location :  ${{ parameters.source_location }}
           #variables_file_path :  ${{ parameters.variables_file_path }}
