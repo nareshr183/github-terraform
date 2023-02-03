@@ -1,0 +1,72 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+parameters:
+  - name: source_location
+    values:
+      - '/IaC/TFCode'
+  - name: variables_file_path
+    values:
+      - './Vars/dev.tfvars'
+  - name: environment_name
+    values:
+      - 'dev'
+  - name: service_principle_name
+    values:
+      - 'terraform-deployment-spn'
+  - name: backend_storage_resourceGroupName
+    values:
+      - 'rg-terraform-state'
+  - name: backend_storage_account_name
+    values:
+      - 'stterraformstate99'
+  - name: backend_storage_container_name
+    values:
+      - 'tf-state'
+  - name: backend_storage_state_file_name
+    values:
+      - 'dev-env.tfstate'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: validate
+    jobs:
+      - template: validate.yaml
+        parameters:
+          source_location :  ${{ parameters.source_location }}
+          variables_file_path :  ${{ parameters.variables_file_path }}
+          environment_name :  ${{ parameters.environment_name }}
+          service_principle_name :  ${{ parameters.service_principle_name }}
+          backend_storage_resourceGroupName :  ${{ parameters.backend_storage_resourceGroupName }}
+          backend_storage_account_name :  ${{ parameters.backend_storage_account_name }}
+          backend_storage_container_name :  ${{ parameters.backend_storage_container_name }}
+          backend_storage_state_file_name :  ${{ parameters.backend_storage_state_file_name }}
+          
+
+  - stage: deploy_${{ parameters.environment_name }}
+    jobs:
+      - deployment: dev
+        timeoutInMinutes: 0
+        displayName: deploy_${{ parameters.environment_name }}
+        environment: ${{ parameters.environment_name }} 
+        strategy:
+         runOnce:
+           deploy:
+             steps:
+              - template: deploy.yml
+                parameters:
+                  source_location :  ${{ parameters.source_location }}
+                  variables_file_path :  ${{ parameters.variables_file_path }}
+                  environment_name :  ${{ parameters.environment_name }}
+                  service_principle_name :  ${{ parameters.service_principle_name }}
+                  backend_storage_resourceGroupName :  ${{ parameters.backend_storage_resourceGroupName }}
+                  backend_storage_account_name :  ${{ parameters.backend_storage_account_name }}
+                  backend_storage_container_name :  ${{ parameters.backend_storage_container_name }}
+                  backend_storage_state_file_name :  ${{ parameters.backend_storage_state_file_name }}

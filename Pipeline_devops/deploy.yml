@@ -1,0 +1,45 @@
+parameters:
+  - name: source_location
+  - name: variables_file_path
+  - name: environment_name
+  - name: service_principle_name
+  - name: backend_storage_resourceGroupName
+  - name: backend_storage_account_name
+  - name: backend_storage_container_name
+  - name: backend_storage_state_file_name
+  
+steps:
+   - download: none
+   - task: DownloadBuildArtifacts@0
+     displayName: 'Download Artifacts'
+     inputs:
+       buildType: current
+       downloadType: single
+       artifactName: '${{ parameters.environment_name }}'
+       downloadPath: '$(System.ArtifactsDirectory)'
+
+   - task: TerraformInstaller@0
+     displayName: Install '0.14.9'
+     inputs:
+         terraformVersion: '0.14.9'
+     
+   - task: TerraformTaskV1@0
+     displayName:  terraform init
+     inputs:
+         provider: 'azurerm'
+         command: 'init'
+         workingDirectory: '$(System.ArtifactsDirectory)/${{ parameters.environment_name }}'
+         backendServiceArm: ${{ parameters.service_principle_name }}
+         backendAzureRmResourceGroupName: ${{ parameters.backend_storage_resourceGroupName }}
+         backendAzureRmStorageAccountName: ${{ parameters.backend_storage_account_name }}
+         backendAzureRmContainerName: ${{ parameters.backend_storage_container_name }}
+         backendAzureRmKey: ${{ parameters.backend_storage_state_file_name }}
+   
+   - task: TerraformTaskV1@0
+     displayName:  terraform apply
+     inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.ArtifactsDirectory)/${{ parameters.environment_name }}'
+        commandOptions: '$(System.ArtifactsDirectory)/${{ parameters.environment_name }}/plan.tfplan'
+        environmentServiceNameAzureRM: ${{ parameters.service_principle_name }}
