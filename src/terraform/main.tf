@@ -25,7 +25,7 @@ terraform {
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-features {}
+  features {}
 }
 
 
@@ -36,6 +36,37 @@ resource "azurerm_resource_group" "rg" {
   location = "East US"
 }
 
+resource "azurerm_app_service_plan" "app_service_plan" {
+  name                = "myappservice-plan"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+   depends_on          = [azurerm_resource_group.rg]
+}
+
+resource "azurerm_app_service" "app_service" {
+  name                = "mywebapp-naresh-453627"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
+
+  /*#(Optional)
+  site_config {
+    java_framework_version = "1.8"
+    scm_type               = "LocalGit"
+  }
+
+  #(Optional)
+  app_settings = {
+    "SOME_KEY" = "some-value"
+  } */
+ depends_on          = [azurerm_resource_group.rg]
+}
+
 # create virtual network
 
 resource "azurerm_virtual_network" "vnet1" {
@@ -43,7 +74,7 @@ resource "azurerm_virtual_network" "vnet1" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = ["10.0.0.0/16"]
-  depends_on = [azurerm_resource_group.rg]
+  depends_on          = [azurerm_resource_group.rg]
 }
 
 
@@ -55,7 +86,7 @@ resource "azurerm_subnet" "subnet1" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet1.name
   address_prefixes     = ["10.0.1.0/24"]
- depends_on = [azurerm_resource_group.rg,azurerm_virtual_network.vnet1 ]
+  depends_on           = [azurerm_resource_group.rg, azurerm_virtual_network.vnet1]
 }
 
 # create network security group and added one rule to allow all traffic 
@@ -76,7 +107,7 @@ resource "azurerm_network_security_group" "nsg1" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-  depends_on = [azurerm_resource_group.rg ]
+  depends_on = [azurerm_resource_group.rg]
 }
 
 # network security group association with subnet
@@ -85,7 +116,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg_subnet_associa
 
   subnet_id                 = azurerm_subnet.subnet1.id
   network_security_group_id = azurerm_network_security_group.nsg1.id
-  depends_on = [azurerm_subnet.subnet1,azurerm_network_security_group.nsg1]
+  depends_on                = [azurerm_subnet.subnet1, azurerm_network_security_group.nsg1]
 }
 
 # create Network interface card
@@ -113,10 +144,10 @@ resource "azurerm_virtual_machine" "webserver-1" {
   vm_size               = "Standard_B1ms"
 
   # Uncomment this line to delete the OS disk automatically when deleting the VM
-   delete_os_disk_on_termination = true
+  delete_os_disk_on_termination = true
 
   # Uncomment this line to delete the data disks automatically when deleting the VM
-   delete_data_disks_on_termination = true
+  delete_data_disks_on_termination = true
 
   storage_image_reference {
     publisher = "Canonical"
@@ -138,5 +169,5 @@ resource "azurerm_virtual_machine" "webserver-1" {
   os_profile_linux_config {
     disable_password_authentication = false
   }
-  depends_on = [azurerm_network_interface.nic1,azurerm_resource_group.rg]
+  depends_on = [azurerm_network_interface.nic1, azurerm_resource_group.rg]
 }
